@@ -12,16 +12,16 @@ if TYPE_CHECKING:
     
     
 class Post(Base):
-    __tablename__="Post"
+    __tablename__="posts"
     
     id: Mapped[int] = mapped_column(primary_key=True)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     author_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", "CASCADE"),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )
     topic_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", "CASCADE"),
+        ForeignKey("topic.id", ondelete="CASCADE"),
         nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(

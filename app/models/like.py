@@ -9,15 +9,15 @@ if TYPE_CHECKING:
     from app.models.user import User
     from app.models.post import Post
 class Like(Base):
-    __tablename__="Like"
+    __tablename__="likes"
     
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", "CASCADE"),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )    
     post_id: Mapped[int] = mapped_column(
-        ForeignKey("posts.id", "CASCADE"),
+        ForeignKey("posts.id", ondelete="CASCADE"),
         nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(

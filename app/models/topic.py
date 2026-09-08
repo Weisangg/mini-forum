@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from app.models.category import Category
     from app.models.user import User
 class Topic(Base):
-    __tablename__='Topics'
+    __tablename__='topic'
     
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
@@ -19,7 +19,7 @@ class Topic(Base):
         nullable=False
     )
     category_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", "CASCADE"),
+        ForeignKey("categories.id", ondelete="CASCADE"),
         nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(
