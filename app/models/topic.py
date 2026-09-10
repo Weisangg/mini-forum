@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from app.models.category import Category
     from app.models.user import User
 class Topic(Base):
-    __tablename__='topic'
+    __tablename__='topics'
     
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
@@ -34,8 +34,8 @@ class Topic(Base):
         nullable=False
     )
     # Связи (многие к 1)
-    authot: Mapped[list["User"]] = relationship(back_populates="posts")
-    topic: Mapped[list["Topic"]] = relationship(back_populates="posts")
+    authot: Mapped["User"] = relationship(back_populates="topics")
+    topic: Mapped["Topic"] = relationship(back_populates="topics")
             
     # Связь: тема -> сообщения (1 ко многим)
-    posts: Mapped[list["Post"]] = relationship(back_populates="post", cascade="all, delete-orphan")
+    posts: Mapped[list["Post"]] = relationship(back_populates="topic", cascade="all, delete-orphan")

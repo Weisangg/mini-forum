@@ -22,4 +22,4 @@ class User(Base):
     
     topics: Mapped[list['Topic']] = relationship(back_populates="author", cascade="all, delete-orphan")
     posts: Mapped[list['Post']] = relationship(back_populates="author", cascade="all, delete-orphan")
-    likes: Mapped[list['Like']] = relationship(back_populates="author", cascade="all, delete-orphan")
+    likes: Mapped[list['Like']] = relationship(back_populates="user", cascade="all, delete-orphan")

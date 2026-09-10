@@ -21,7 +21,7 @@ class Post(Base):
         nullable=False
     )
     topic_id: Mapped[int] = mapped_column(
-        ForeignKey("topic.id", ondelete="CASCADE"),
+        ForeignKey("topics.id", ondelete="CASCADE"),
         nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(
@@ -36,8 +36,8 @@ class Post(Base):
         nullable=False
     )
     # Связи (многие к 1)
-    user: Mapped[list["User"]] = relationship(back_populates='posts')
-    topic: Mapped[list["Topic"]] = relationship(back_populates='posts')
+    user: Mapped["User"] = relationship(back_populates='posts')
+    topic: Mapped["Topic"] = relationship(back_populates='posts')
     
     # Связь: тема -> сообщения (1 ко многим)
-    likes: Mapped[list["Like"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    likes: Mapped[list["Like"]] = relationship(back_populates="post", cascade="all, delete-orphan")

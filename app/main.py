@@ -3,6 +3,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.routers import forum # 1. Импортируем наш файл роутера
+from app.routers import categories
 from app.core.config import settings
 from app.db.database import get_session
 
@@ -14,6 +15,8 @@ app = FastAPI(
 
 # 2. Подключаем роутер к главному приложению
 app.include_router(forum.router)
+app.include_router(categories.router)
+app.include_router(categories.router)
 
 # Создаем тот самый тестовый маршрут (эндпоинт)
 @app.get("/health")
@@ -31,3 +34,4 @@ async def health_check(session: AsyncSession = Depends(get_session)):
       "version": settings.VERSION,
       "database": db_status,
   }
+  

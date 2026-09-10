@@ -6,8 +6,13 @@ class UserBase(BaseModel):
     username: str = Field(min_length=3, max_length=20)
     email: EmailStr
 
-class UserCreat(UserBase):
+class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=20)
+
+# Схема для входа (POST /auth/login)
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
 
 # 4. Исходящий ответ API
 class UserResponse(UserBase):

@@ -9,7 +9,7 @@ class CategoryBase(BaseModel):
 class CategoryCreate(CategoryBase):
     pass
 
-class CategoryResponse(BaseModel):
+class CategoryResponse(CategoryBase):
     id: int
     created_at: datetime
     

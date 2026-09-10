@@ -13,7 +13,7 @@ class Category(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50),unique=True, index=True, nullable=False)
-    description: Mapped[str] = mapped_column(String(2000), nullable=False)
+    description: Mapped[str] = mapped_column(String(2000), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     
-    topics: Mapped[list["Topic"]] = relationship(back_populates="author", cascade="all, delete-orphan")
+    topics: Mapped[list["Topic"]] = relationship(back_populates="category", cascade="all, delete-orphan")
