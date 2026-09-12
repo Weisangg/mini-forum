@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Mini-Forum API"
     VERSION: str = "1.0.0"
     DEBUG: bool = False
+    ALGORITHM: str = "HS256"
     
     # Инфраструктура
     DATABASE_URL: str

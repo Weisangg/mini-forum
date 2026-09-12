@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.routers import forum # 1. Импортируем наш файл роутера
 from app.routers import categories
+from app.routers import auth
+from app.routers import users
 from app.core.config import settings
 from app.db.database import get_session
 
@@ -16,7 +18,8 @@ app = FastAPI(
 # 2. Подключаем роутер к главному приложению
 app.include_router(forum.router)
 app.include_router(categories.router)
-app.include_router(categories.router)
+app.include_router(auth.router)
+app.include_router(users.router)
 
 # Создаем тот самый тестовый маршрут (эндпоинт)
 @app.get("/health")

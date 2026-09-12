@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
-from app.core.security import password_hash
+from app.core.security import password_hash, password_verify, create_access_token
 from app.db.database import get_session
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -45,3 +46,31 @@ async def register_user(user_in: UserCreate, db: AsyncSession = Depends(get_sess
         
     # 5. Возвращаем объект (FastAPI отфильтрует его через UserResponse)
     return new_user
+
+@router.post("/login")
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_session),
+):
+    
+    # 1. Ищем пользователя в БД по логину/email
+    query = select(User).where(User.email == form_data.username)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+    
+    # 2. Проверяем существование и пароль
+    if not user or not password_verify(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Неверный логин или пароль",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
+    # 3. Создаем токен
+    token = create_access_token(user_id=user.id)
+    
+    # 4. Возвращает результат 
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }
