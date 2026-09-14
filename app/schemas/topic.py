@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 class TopicBase(BaseModel):
-    title: str = Field(None, min_length=5, max_length=255)
+    title: str = Field(min_length=5, max_length=255)
     
 class TopicCreate(TopicBase):
     category_id: int
@@ -17,6 +17,6 @@ class TopicResponse(TopicBase):
     model_config = ConfigDict(from_attributes=True)
     
 class TopicUpdate(BaseModel):
-    title: Optional[str] = Field(None, min_length=5, max_length=255) 
+    title: str | None = Field(default=None, min_length=5, max_length=255) 
     
 
