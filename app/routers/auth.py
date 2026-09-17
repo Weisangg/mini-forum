@@ -11,7 +11,7 @@ from app.db.database import get_session
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 # Прежде чем запустить регистрацию пользователя, выполни функцию get_session(Depends)
-@router.post("/register", response_model="UserResponse", status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(user_in: UserCreate, db: AsyncSession = Depends(get_session)):
     
     # 1. Проверяем, свободен ли email и username

@@ -7,7 +7,7 @@ from app.models.user import User
 from app.core.security import decode_access_token, oauth2_scheme
 
 async def get_current_user(
-    token: str = Depends(),
+    token: str = Depends(oauth2_scheme),
     db: AsyncSession = Depends(get_session),
 ) -> User:
     # 1. Расшифровываем токен (если он просрочен или битый — decode_access_token сама выбросит 401)

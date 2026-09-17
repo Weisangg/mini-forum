@@ -1,33 +1,34 @@
 from datetime import datetime
-from typing import Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from app.schemas.topic import TopicResponse
 
 class UserBase(BaseModel):
     username: str = Field(min_length=3, max_length=20)
     email: EmailStr
+    bio: str | None = Field(default=None, max_length=500)
 
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=20)
 
-# Схема для входа (POST /auth/login)
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-# 4. Исходящий ответ API
 class UserResponse(UserBase):
-    id: int 
+    id: int
     created_at: datetime
     is_active: bool
-    
-    # для чтения объектов из SQLAlchemy
+    topics: list[TopicResponse] = []
+
     model_config = ConfigDict(from_attributes=True)
-    
-class UserUpdata(BaseModel):
-    username: Optional[str] = Field(None, min_length=3, max_length=20)
-    email: Optional[EmailStr] = None # означает что поле по умолчанию пустое 
-    password: Optional[str] = Field(None, min_length=8, max_length=20)
-    
+
+class UserUpdate(BaseModel):
+    username: str | None = Field(default=None, min_length=3, max_length=20)
+    email: EmailStr | None = Field(default=None)
+    bio: str | None = Field(default=None, max_length=500)
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    
+UserResponse.model_rebuild()
