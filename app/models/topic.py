@@ -9,6 +9,8 @@ if TYPE_CHECKING:
     from app.models.post import Post
     from app.models.category import Category
     from app.models.user import User
+    from app.models.like import Like
+    
 class Topic(Base):
     __tablename__='topics'
     
@@ -33,9 +35,13 @@ class Topic(Base):
         onupdate=func.now(),
         nullable=False
     )
+    
+    category: Mapped["Category"] = relationship("Category", back_populates="topics")
+    
     # Связи (многие к 1)
     authot: Mapped["User"] = relationship(back_populates="topics")
     topic: Mapped["Topic"] = relationship(back_populates="topics")
             
     # Связь: тема -> сообщения (1 ко многим)
-    posts: Mapped[list["Post"]] = relationship(back_populates="topic", cascade="all, delete-orphan")
+    posts: Mapped[list["Post"]] = relationship("Post", back_populates="topic", cascade="all, delete-orphan")
+    likes: Mapped[list["Like"]] = relationship("Like", back_populates="topic", cascade="all, delete-orphan")

@@ -19,3 +19,4 @@ class TopicResponse(TopicBase):
 
 class TopicUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=5, max_length=255)
+    contect: str | None = Field(default=None, min_length=10)

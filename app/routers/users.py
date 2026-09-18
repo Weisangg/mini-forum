@@ -15,9 +15,9 @@ async def register_categories(user_in: UserCreate, db: AsyncSession = Depends(ge
         select(User).where((User.email == user_in.email) | (User.userm)) 
     )
 
-@router.get("/{category_id}", response_model=UserResponse)
-async def register_categories_id(category_in: UserCreate, db: AsyncSession = Depends(get_session)):
-    category = await db.execute(User, category_in)
+@router.get("/{user_id}", response_model=UserResponse)
+async def register_categories_id(user_in: UserCreate, db: AsyncSession = Depends(get_session)):
+    category = await db.execute(User, user_in)
     if not category:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

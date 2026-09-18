@@ -6,6 +6,7 @@ from app.routers import forum # 1. Импортируем наш файл роу
 from app.routers import categories
 from app.routers import auth
 from app.routers import users
+from app.routers import topics
 from app.core.config import settings
 from app.db.database import get_session
 
@@ -20,6 +21,7 @@ app.include_router(forum.router)
 app.include_router(categories.router)
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(topics.router)
 
 # Создаем тот самый тестовый маршрут (эндпоинт)
 @app.get("/health")
