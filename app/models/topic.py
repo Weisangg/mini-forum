@@ -39,9 +39,7 @@ class Topic(Base):
     category: Mapped["Category"] = relationship("Category", back_populates="topics")
     
     # Связи (многие к 1)
-    authot: Mapped["User"] = relationship(back_populates="topics")
-    topic: Mapped["Topic"] = relationship(back_populates="topics")
-            
+    author: Mapped["User"] = relationship("User", back_populates="topics")
+    category: Mapped["Category"] = relationship("Category", back_populates="topics")
     # Связь: тема -> сообщения (1 ко многим)
     posts: Mapped[list["Post"]] = relationship("Post", back_populates="topic", cascade="all, delete-orphan")
-    likes: Mapped[list["Like"]] = relationship("Like", back_populates="topic", cascade="all, delete-orphan")

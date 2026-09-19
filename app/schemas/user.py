@@ -8,7 +8,10 @@ class UserBase(BaseModel):
     bio: str | None = Field(default=None, max_length=500)
 
 class UserCreate(UserBase):
-    password: str = Field(min_length=8, max_length=20)
+    username: str
+    email: EmailStr
+    password: str
+    bio: str | None = None
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -16,9 +19,11 @@ class UserLogin(BaseModel):
 
 class UserResponse(UserBase):
     id: int
+    username: str
+    email: EmailStr
+    bio: str | None = None
     created_at: datetime
     is_active: bool
-    topics: list[TopicResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
 

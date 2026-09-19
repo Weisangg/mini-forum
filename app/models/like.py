@@ -26,8 +26,8 @@ class Like(Base):
         nullable=False
     )
     # Связи (многие к 1)
-    user: Mapped["User"] = relationship(back_populates="likes")
-    post: Mapped["Post"] = relationship(back_populates="likes")
+    user: Mapped["User"] = relationship("User", back_populates="likes")
+    post: Mapped["Post"] = relationship("Post", back_populates="likes")
     
     __table_args__ = (
         UniqueConstraint("user_id", "post_id", name="uq_user_post_like"),

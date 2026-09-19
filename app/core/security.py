@@ -3,11 +3,12 @@ from passlib.context import CryptContext
 from datetime import datetime, timezone, timedelta
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from fastapi import HTTPException, status
+from app.core.config import settings
 
 from fastapi.security import OAuth2PasswordBearer
 
 
-SECRET_KEY = "gggself"
+SECRET_KEY = settings.secret_key
 ALGORITHM = "HS256"
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -27,15 +28,15 @@ def create_access_token(user_id: int) -> str:
     }
     
     # генерируюет токен и подписываем playoad
-    payload = jwt.decode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    encode_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     
     # возвращает токен
-    return payload
+    return encode_jwt
 
 def decode_access_token(token: str) -> dict:
     try:
         # 1. Проверяем подпись и расшифровываем payload
-        payload = jwt.encode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     
     except ExpiredSignatureError:

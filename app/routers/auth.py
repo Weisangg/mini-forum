@@ -10,6 +10,15 @@ from app.db.database import get_session
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
+async def authenticate_user(db: AsyncSession, username_or_email: str, password: str):
+    stmt = select(User).where((User.email == username_or_email) | (User.username == username_or_email))
+    result = await db.execute(stmt)
+    user = result.scalars().first()
+    
+    if not user or not password_verify(password, user.hashed_password):
+        return None
+    return user
+
 # Прежде чем запустить регистрацию пользователя, выполни функцию get_session(Depends)
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def register_user(user_in: UserCreate, db: AsyncSession = Depends(get_session)):
@@ -34,10 +43,11 @@ async def register_user(user_in: UserCreate, db: AsyncSession = Depends(get_sess
     hashed_pwd = password_hash(user_in.password)
         
     new_user = User(
-        username = user_in.username,
-        email=user_in.email,
-        hashed_password=hashed_pwd
-    )
+    username=user_in.username,
+    email=user_in.email,
+    hashed_password=hashed_pwd,
+    bio=user_in.bio,  
+)
         
     # 4. Сохраняем в PostgreSQL
     db.add(new_user)
@@ -53,13 +63,9 @@ async def login(
     db: AsyncSession = Depends(get_session),
 ):
     
-    # 1. Ищем пользователя в БД по логину/email
-    query = select(User).where(User.email == form_data.username)
-    result = await db.execute(query)
-    user = result.scalar_one_or_none()
-    
     # 2. Проверяем существование и пароль
-    if not user or not password_verify(form_data.password, user.hashed_password):
+    user = await authenticate_user(db, form_data.username, form_data.password)
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Неверный логин или пароль",
