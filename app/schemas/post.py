@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 class PostBase(BaseModel):
-    content: str = Field(None, min_length=1)
+    content: str = Field(min_length=1, max_length=5000, description="Текст сообщение")
     
 class PostCreate(PostBase):
     topic_id: int
