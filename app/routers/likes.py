@@ -2,12 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.topic import Topic
 from app.models.user import User
 from app.models.post import Post
 from app.models.like import Like
-from app.models.category import Category
-from app.schemas.like import LikeResponse, LikeCreate
 from app.db.database import get_session
 
 from app.dependencies import get_current_user

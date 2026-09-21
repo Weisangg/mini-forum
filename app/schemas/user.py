@@ -1,6 +1,5 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-from app.schemas.topic import TopicResponse
 
 class UserBase(BaseModel):
     username: str = Field(min_length=3, max_length=20)
@@ -36,4 +35,3 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     
-UserResponse.model_rebuild()

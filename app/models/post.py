@@ -43,3 +43,7 @@ class Post(Base):
     author: Mapped["User"] = relationship("User", back_populates="posts")
     topic: Mapped["Topic"] = relationship("Topic", back_populates="posts")
     likes: Mapped[list["Like"]] = relationship("Like", back_populates="post", cascade="all, delete-orphan")
+    
+    @property
+    def likes_count(self) -> int:
+        return len(self.likes)

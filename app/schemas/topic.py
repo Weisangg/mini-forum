@@ -1,8 +1,10 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.schemas.post import PostResponse
+from app.schemas.post import PostDetailResponse
 from app.schemas.common import UserShort
+from app.schemas.user import UserResponse
+from app.schemas.category import CategoryResponse
 
 class TopicBase(BaseModel):
     title: str = Field(min_length=5, max_length=255)
@@ -27,6 +29,9 @@ class TopicDetailResponse(BaseModel):
     id: int
     title: str
     created_at: datetime
-    posts: list[PostResponse] = []
+    
+    author: UserResponse
+    category: CategoryResponse
+    posts: list[PostDetailResponse] = []
     
     model_config = ConfigDict(from_attributes=True)
