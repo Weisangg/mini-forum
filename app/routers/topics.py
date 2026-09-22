@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,8 +14,16 @@ from app.dependencies import get_current_user
 router = APIRouter(prefix='/topics',tags=['Topics'])
 
 @router.get('/', response_model=list[TopicResponse])
-async def register_topics(db: AsyncSession = Depends(get_session)):
-    result = await db.execute(select(Topic))
+async def register_topics(
+    search: str | None = Query(None, description="Поиск по названию темы"),
+    db: AsyncSession = Depends(get_session)
+):
+    stmt = select(Topic)
+    
+    if search:
+        stmt = stmt.where(Topic.title.ilike(f"%{search}%"))
+    
+    result = await db.execute(stmt)
     return result.scalars().all()
 
 @router.get("/{topic_id}", response_model=TopicResponse)
