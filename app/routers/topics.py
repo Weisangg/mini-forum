@@ -16,12 +16,24 @@ router = APIRouter(prefix='/topics',tags=['Topics'])
 @router.get('/', response_model=list[TopicResponse])
 async def register_topics(
     search: str | None = Query(None, description="Поиск по названию темы"),
+    category_id: int = Query(None, description="Фильтр по категории"),
+    author_id: int | None = Query(None, description="Фильтр по автору"),
+    limit: int = Query(10, ge=1, le=100, description="Колисество тем"),
+    offset: int = Query(0, description="Смещение"),
     db: AsyncSession = Depends(get_session)
 ):
     stmt = select(Topic)
     
+    # 1. Фильтрация
     if search:
         stmt = stmt.where(Topic.title.ilike(f"%{search}%"))
+    if category_id is not None:
+        stmt = stmt.where(Topic.category_id == category_id)
+    if author_id is not None:
+        stmt = stmt.where(Topic.author_id == author_id)
+        
+    # 2. Пагинация
+    stmt = stmt.offset(offset).limit(limit)
     
     result = await db.execute(stmt)
     return result.scalars().all()

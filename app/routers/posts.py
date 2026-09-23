@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,18 +17,21 @@ router = APIRouter(tags=["Posts"])
 @router.get("/topics/{topic_id}/posts", response_model=list[PostResponse])
 async def get_posts_for_topic(
     topic_id: int, 
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_session)
 ):
+    
+    # 1. Проверяем, существует ли тема
     topic = await db.get(Topic, topic_id)
     if not topic:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="У вас нет темы",
+            detail="Topic not found",
         )
         
-    stmt = select(Post).where(Post.topic_id == topic_id)
+    stmt = select(Post).where(Post.topic_id == topic_id).limit(limit).offset(offset)
     result = await db.execute(stmt)
-    
     return result.scalars().all
 
 # 2. POST /topics/{topic_id}/posts — Создание сообщения (Только авторизованные)
