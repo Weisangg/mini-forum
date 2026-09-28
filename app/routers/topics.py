@@ -22,7 +22,10 @@ async def register_topics(
     offset: int = Query(0, description="Смещение"),
     db: AsyncSession = Depends(get_session)
 ):
-    stmt = select(Topic)
+    stmt = select(Topic).options(
+        selectinload(Topic.author),
+        selectinload(Topic.category)
+    )
     
     # 1. Фильтрация
     if search:
@@ -76,11 +79,14 @@ async def create_topic(
     # 4. Сохраняем в PostgreSQL
     db.add(new_topic)
     await db.commit()
-    await db.refresh(new_topic)
     
-    # 5. Возврощает новою тему
-    return new_topic
-
+    stmt = select(Topic).options(
+        selectinload(Topic.author),
+        selectinload(Topic.category)
+    ).where(Topic.id == new_topic.id)
+    
+    result = await db.execute(stmt)
+    return result.scalar_one()
 # 1. PATCH /topics/{topic_id} — Редактирование
 @router.patch("/{topic_id}", response_model=TopicResponse)
 async def update_topic(

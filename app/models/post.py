@@ -40,7 +40,7 @@ class Post(Base):
     topic: Mapped["Topic"] = relationship(back_populates='posts')
     
     # Связь: тема -> сообщения (1 ко многим)
-    author: Mapped["User"] = relationship("User", back_populates="posts")
+    author: Mapped["User"] = relationship("User", back_populates="posts", overlaps="user")
     topic: Mapped["Topic"] = relationship("Topic", back_populates="posts")
     likes: Mapped[list["Like"]] = relationship("Like", back_populates="post", cascade="all, delete-orphan")
     

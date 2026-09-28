@@ -46,3 +46,7 @@ async def health_check(session: AsyncSession = Depends(get_session)):
         "version": settings.VERSION,
         "database": db_status,
     }
+    
+if __name__=="__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", post=8000)

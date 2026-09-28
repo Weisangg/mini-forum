@@ -6,8 +6,9 @@ class CategoryBase(BaseModel):
     name: str = Field(min_length=3, max_length=20)
     description: str = Field(None, min_length=10, max_length=2000)
 
-class CategoryCreate(CategoryBase):
-    pass
+class CategoryCreate(BaseModel):
+    name: str
+    description: str | None = None
 
 class CategoryResponse(CategoryBase):
     id: int
